@@ -1,0 +1,607 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="OffTheGrit1.Site1" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <title>
+        <asp:ContentPlaceHolder ID="title" runat="server">
+        </asp:ContentPlaceHolder>
+    </title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <link href="/src/style.css" rel="stylesheet">
+    <%--  <link rel="stylesheet" href="./Home.css">
+    <link rel="stylesheet" href="./Product.css">--%>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'nav-primary': 'hsl(220, 13%, 18%)',
+                        'nav-primary-foreground': 'hsl(0, 0%, 98%)',
+                        'nav-accent': 'hsl(39, 100%, 50%)',
+                        'nav-accent-foreground': 'hsl(220, 13%, 18%)',
+                        'nav-hover': 'hsl(220, 13%, 25%)',
+                        'nav-search-bg': 'hsl(0, 0%, 100%)',
+                        'nav-search-border': 'hsl(214, 32%, 91%)',
+                        'nav-muted': 'hsl(215, 16%, 65%)',
+                        'custom-green': '#00ab66'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .nav-gradient {
+            background: var(--color-gray-800);
+        }
+
+        .nav-shadow {
+            box-shadow: 0 2px 10px -2px hsl(220, 13%, 18%, 0.3);
+        }
+
+        .search-gradient {
+            background: linear-gradient(90deg, hsl(0, 0%, 100%), hsl(39, 100%, 98%));
+        }
+
+        .transition-nav {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        Dark mode styles
+        .dark .nav-gradient {
+            background: linear-gradient(135deg, hsl(240, 10%, 8%), hsl(240, 10%, 5%));
+        }
+
+        .dark .nav-shadow {
+            box-shadow: 0 2px 10px -2px hsl(240, 10%, 8%, 0.5);
+        }
+
+        .dark .search-gradient {
+            background: linear-gradient(90deg, hsl(240, 10%, 12%), hsl(240, 10%, 15%));
+        }
+
+        /* Theme toggle styles */
+        .theme-toggle {
+            position: relative;
+            z-index: 0;
+            display: inline-grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            border-radius: 9999px;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 3px;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+        }
+
+        .dark .theme-toggle {
+            background: hsl(240, 10%, 15%);
+        }
+
+        .theme-option {
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: hsl(215, 16%, 65%);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            background: transparent;
+        }
+
+            .theme-option.active {
+                background: hsl(39, 100%, 50%);
+                color: hsl(220, 13%, 18%);
+            }
+
+            .theme-option:hover:not(.active) {
+                color: hsl(0, 0%, 98%);
+            }
+
+            .theme-option svg {
+                width: 20px;
+                height: 20px;
+            }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 transition-colors duration-200">
+    <form id="form1" runat="server">
+        <div>
+            <nav class="sticky top-0 z-50 w-full nav-gradient nav-shadow">
+                <div class="mx-auto  px-4 sm:px-6 lg:px-8 justify-center relative">
+
+                    <div class="flex h-14 items-center justify-between ">
+
+                        <!-- Logo - Left Side -->
+                        <div class="flex items-center flex-shrink-0 left-0">
+                            <a href="./homepage.aspx" class="flex items-center space-x-2 transition-nav hover:opacity-80">
+                                <%--                                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500">
+                                    <span class="text-sm font-bold text-white">OG</span>
+                                </div>--%>
+                                <img src="./images/OTG-logo-orange.png" width="50" alt="" />
+                            </a>
+                        </div>
+
+                        <!--reports-->
+                        <div id="report" visibility="false" runat="server" class="hidden cursor-pointer transition-nav hover:text-nav-accent lg:flex lg:flex-col lg:items-start">
+                            <div class="text-xs text-nav-muted">
+                                <a href="./admin_report2.aspx">View</a>
+                            </div>
+                            <div class="flex items-center space-x-1 text-sm font-semibold text-nav-primary-foreground">
+                                <span>Reports</span>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!--add products-->
+                        <div visibility="false" id="product" runat="server" class="hidden cursor-pointer transition-nav hover:text-nav-accent lg:flex lg:flex-col lg:items-start">
+                            <div class="text-xs text-nav-muted">
+                                <a href="./add_products.aspx">Add</a>
+                            </div>
+                            <div class="flex items-center space-x-1 text-sm font-semibold text-nav-primary-foreground">
+                                <span>Products</span>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!--orders-->
+                        <div visibility="false" id="order" runat="server" class="hidden cursor-pointer transition-nav hover:text-nav-accent lg:flex lg:flex-col lg:items-start">
+                            <div class="text-xs text-nav-muted">
+                                <a href="./admin_orders2.aspx">View</a>
+                            </div>
+                            <div class="flex items-center space-x-1 text-sm font-semibold text-nav-primary-foreground">
+                                <span>Orders</span>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Search Bar - Center -->
+                        <%-- <div class="flex-1 max-w-2xl mx-8">
+                            <div class="flex w-full rounded-md search-gradient">
+                                <button class="flex items-center space-x-1 rounded-l-md border border-r-0 border-nav-search-border bg-gray-100 dark:bg-gray-700 dark:border-gray-600 px-3 py-1.5 text-sm transition-nav hover:bg-gray-200 dark:hover:bg-gray-600">
+                                    <span class="text-gray-700 dark:text-gray-300">All</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="m6 9 6 6 6-6" />
+                                    </svg>
+                                </button>
+                                <input
+                                    type="text"
+                                    placeholder="Off the grid"
+                                    class="flex-1 border border-nav-search-border dark:border-gray-600 dark:text-white px-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-nav-accent" />
+                                <button class="flex items-center justify-center rounded-r-md bg-nav-accent px-4 py-1.5 transition-nav hover:bg-orange-600">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-nav-accent-foreground">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <path d="m21 21-4.35-4.35" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>--%>
+
+                        <div id="searchBox" runat="server" class="flex-1 max-w-2xl mx-8">
+                            <div class="flex w-full rounded-md search-gradient">
+                                <!-- Category Button -->
+                                <div class="relative">
+                                    <button id="searchCategory" type="button"
+                                        class="flex items-center space-x-1 rounded-l-md border border-r-0 border-nav-search-border bg-gray-100 dark:bg-gray-700 dark:border-gray-600 px-3 py-1.5 text-sm transition-nav hover:bg-gray-200 dark:hover:bg-gray-600">
+                                        <span id="searchCategoryText" class="text-gray-700 dark:text-gray-300">All</span>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            class="dark:stroke-gray-300">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Dropdown menu -->
+                                    <div id="categoryDropdown"
+                                        class="absolute left-0 mt-1 w-40 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-md hidden">
+                                        <ul class="py-1 text-sm">
+                                            <%--            <li><a href="#" data-category="All" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-300">All</a></li>
+            <li><a href="index.aspx?catID=1" data-category="Solar" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-300">Solar Solutions</a></li>
+            <li><a href="index.aspx?catID=2" data-category="Water Purification" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-300">Water</a></li>
+            <li><a href="index.aspx?catID=3" data-category="Security" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-300">Security</a></li>--%>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Search Input -->
+                                <asp:TextBox
+                                    ID="searchInput"
+                                    type="text"
+                                    placeholder="Off the grid"
+                                    Visibility="hidden"
+                                    class="flex-1 border border-nav-search-border dark:border-gray-600 dark:text-white px-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-nav-accent"
+                                    runat="server"></asp:TextBox>
+                                <!-- Search Button -->
+                                <button id="searchButton" class="flex items-center justify-center rounded-r-md bg-nav-accent px-4 py-1.5 transition-nav hover:bg-orange-600">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-gray-800)" stroke-width="3" class="text-nav-accent-foreground">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <path d="m21 21-4.35-4.35" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+
+  <%--                      <svg id="Frame 1" class="flex-1 max-w-2xl mx-8" viewBox="0 0 120 93" xmlns="http://www.w3.org/2000/svg">
+                            <g id="OFFTHEGRID" class="flex w-full " filter="url(#filter0_d_1_2)">
+                                <path d="M11.96 43.928L13.364 43.1H15.848V44.456H13.472V48.596H15.8V50H13.364L11.96 49.184V43.928ZM20.228 43.928L18.872 43.1H16.388V44.456H18.716V48.596H16.388V50H18.872L20.228 49.184V43.928ZM22.3836 43.1H26.2236V44.516H23.8956V45.872H26.2236V47.276H23.8956V50H22.3836V43.1ZM30.6516 44.516V43.1H26.8116V44.516H30.6516ZM28.7556 47.276V45.872H26.8116V47.276H28.7556ZM31.9695 43.1H35.8095V44.516H33.4815V45.872H35.8095V47.276H33.4815V50H31.9695V43.1ZM40.2375 44.516V43.1H36.3975V44.516H40.2375ZM38.3415 47.276V45.872H36.3975V47.276H38.3415ZM52.5811 44.456H49.1251V50H47.4691V44.456H44.3131V43.1H52.5811V44.456ZM54.1414 43.1H55.6534V45.872H57.9814V47.24H55.6534V50H54.1414V43.1ZM62.4094 43.1H60.8974V45.872H58.5694V47.24H60.8974V50H62.4094V43.1ZM64.8055 43.1H68.6455V44.516H66.3175V45.872H68.6455V47.24H66.3175V48.644H68.5975V50H64.8055V43.1ZM69.2335 48.644V50H73.0735V48.644H69.2335ZM73.0735 44.516V43.1H69.1855V44.516H73.0735ZM71.1295 47.24V45.872H69.1855V47.24H71.1295ZM77.9952 43.928V49.184L79.3992 50H81.8352V48.644H79.5552V44.516H81.8832V43.1H79.3992L77.9952 43.928ZM86.3112 45.332H84.7512V44.516H82.4232V43.1H84.9072L86.3112 43.928V45.332ZM86.3112 45.872V49.184L84.9072 50H82.4712V48.644H84.7512V47.24H82.4232V45.872H86.3112ZM88.4656 43.1H92.3056V44.516H89.9776V45.872H92.3056V47.276H89.9776V50H88.4656V43.1ZM96.7336 50V47.144L95.6056 46.556L96.7336 46.016V43.928L95.3176 43.1H92.8456V44.516H95.2216V45.872H92.8456V47.276H95.2216V50H96.7336ZM98.5381 43.1H100.05V50H98.5381V43.1ZM102.212 43.1H106.052V44.456H103.724V48.596H106.052V50H102.212V43.1ZM110.48 43.928L109.124 43.1H106.64V44.456H108.968V48.596H106.64V50H109.124L110.48 49.184V43.928Z"
+                                    fill="rgb(251 146 60)" />
+                            </g>
+                        </svg>--%>
+
+                        <svg id="OTGTOP" runat="server" class="flex-1 max-w-2xl mx-8 lg:px-20 justify-center items-center h-auto" viewBox="0 0 99 7" fill="none">
+                            <path id="Subtract" class="flex-1 w-full" 
+                                d="M3.8877 1.35645H1.51172V5.49609H3.83984V6.90039H1.4043L0 6.08398V0.828125L1.4043 0H3.8877V1.35645ZM6.91211 0L8.26758 0.828125V6.08398L6.91211 6.90039H4.42773V5.49609H6.75586V1.35645H4.42773V0H6.91211ZM14.2637 1.41602H11.9355V2.77246H14.2637V4.17676H11.9355V6.90039H10.4238V0H14.2637V1.41602ZM23.8496 1.41602H21.5215V2.77246H23.8496V4.17676H21.5215V6.90039H20.0098V0H23.8496V1.41602ZM40.6211 1.35645H37.165V6.90039H35.5088V1.35645H32.3535V0H40.6211V1.35645ZM43.6934 2.77246H46.0215V4.14062H43.6934V6.90039H42.1816V0H43.6934V2.77246ZM50.4492 0V6.90039H48.9375V4.14062H46.6094V2.77246H48.9375V0H50.4492ZM56.6855 1.41602H54.3574V2.77246H56.6855V4.14062H54.3574V5.54395H56.6377V6.90039H52.8457V0H56.6855V1.41602ZM61.1133 5.54395V6.90039H57.2734V5.54395H61.1133ZM69.9229 0V1.41602H67.5947V5.54395H69.875V6.90039H67.4395L66.0352 6.08398V0.828125L67.4395 0H69.9229ZM74.3516 6.08398L72.9473 6.90039H70.5107V5.54395H72.791V4.14062H70.4629V2.77246H74.3516V6.08398ZM80.3457 1.41602H78.0176V2.77246H80.3457V4.17676H78.0176V6.90039H76.5059V0H80.3457V1.41602ZM83.3574 0L84.7734 0.828125V2.91602L83.6455 3.45605L84.7734 4.04395V6.90039H83.2617V4.17676H80.8857V2.77246H83.2617V1.41602H80.8857V0H83.3574ZM88.0898 6.90039H86.5781V0H88.0898V6.90039ZM94.0918 1.35645H91.7637V5.49609H94.0918V6.90039H90.252V0H94.0918V1.35645ZM97.1641 0L98.5195 0.828125V6.08398L97.1641 6.90039H94.6797V5.49609H97.0078V1.35645H94.6797V0H97.1641ZM16.7959 2.77246V4.17676H14.8516V2.77246H16.7959ZM26.3818 2.77246V4.17676H24.4375V2.77246H26.3818ZM59.1699 2.77246V4.14062H57.2256V2.77246H59.1699ZM74.3516 0.828125V2.23242H72.791V1.41602H70.4629V0H72.9473L74.3516 0.828125ZM18.6914 0V1.41602H14.8516V0H18.6914ZM28.2773 0V1.41602H24.4375V0H28.2773ZM61.1133 0V1.41602H57.2256V0H61.1133Z" 
+                                fill="#FB923C" />
+                        </svg>
+
+                        <!-- Right Side Items -->
+                        <div class="flex items-center space-x-6 flex-shrink-0">
+
+
+                            <!-- Language Selector (Desktop) -->
+                            <div class="hidden items-center space-x-1 cursor-pointer transition-nav hover:text-nav-accent lg:flex">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-nav-primary-foreground">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m9 12 2 2 4-4" />
+                                </svg>
+                                <span class="text-sm font-medium text-nav-primary-foreground">EN</span>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-nav-primary-foreground">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </div>
+
+                            <!-- Account (Desktop) -->
+                            <div visibility="false" id="signin" runat="server" class="hidden cursor-pointer transition-nav hover:text-nav-accent lg:flex lg:flex-col lg:items-start">
+                                <div class="text-xs text-nav-muted">
+                                    <a href="./Login.aspx">Hello, Sign in</a>
+                                </div>
+                                <div class="flex items-center space-x-1 text-sm font-semibold text-nav-primary-foreground">
+                                    <span>Account</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="m6 9 6 6 6-6" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!--Logout button-->
+                            <div id="logout" runat="server" visible="false" class="hidden cursor-pointer transition-nav hover:text-nav-accent lg:flex lg:flex-col lg:items-start">
+                                <div class="text-xs text-nav-muted">
+                                    <a href="./Login.aspx">Goodbye, Sign out</a>
+                                </div>
+                                <div class="flex items-center space-x-1 text-sm font-semibold text-nav-primary-foreground">
+                                    <span>Account</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="m6 9 6 6 6-6" />
+                                    </svg>
+                                </div>
+                            </div>
+
+
+                            <!-- Mobile User Icon -->
+                            <a href="/Login.aspx" class="flex items-center justify-center rounded-full p-2 transition-nav hover:bg-nav-hover lg:hidden">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-nav-primary-foreground">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </a>
+
+                            <!-- Cart -->
+                            <a href="/Cart.aspx" class="flex items-center space-x-2 transition-nav hover:text-nav-accent" >
+                                <div id="cart" runat="server" Visible="false" class="relative">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-nav-primary-foreground">
+                                        <circle cx="8" cy="21" r="1" />
+                                        <circle cx="19" cy="21" r="1" />
+                                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57L23 8H7" />
+                                    </svg>
+                                    <p class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-nav-accent text-xs font-bold text-nav-accent-foreground" id="cart-count"><span id="cartCount" runat="server" data-="">0</span></p>
+                                </div>
+                                <span class="hidden text-sm font-medium text-nav-primary-foreground sm:block"></span>
+                            </a>
+                        </div>
+                        <!-- Theme Toggle -->
+                        <div class="theme-toggle">
+                            <button id="theme-light" class="theme-option" data-theme="light" title="Light theme">
+                                <svg viewBox="0 0 28 28" fill="none">
+                                    <circle cx="14" cy="14" r="3.5" stroke="currentColor"></circle>
+                                    <path d="M14 8.5V6.5" stroke="currentColor" stroke-linecap="round"></path>
+                                    <path d="M17.889 10.1115L19.3032 8.69727" stroke="currentColor" stroke-linecap="round"></path>
+                                    <path d="M19.5 14L21.5 14" stroke="currentColor" stroke-linecap="round"></path>
+                                    <path d="M17.889 17.8885L19.3032 19.3027" stroke="currentColor" stroke-linecap="round"></path>
+                                    <path d="M14 21.5V19.5" stroke="currentColor" stroke-linecap="round"></path>
+                                    <path d="M8.69663 19.3029L10.1108 17.8887" stroke="currentColor" stroke-linecap="round"></path>
+                                    <path d="M6.5 14L8.5 14" stroke="currentColor" stroke-linecap="round"></path>
+                                    <path d="M8.69663 8.69711L10.1108 10.1113" stroke="currentColor" stroke-linecap="round"></path>
+                                </svg>
+                            </button>
+                            <button id="theme-dark" class="theme-option" data-theme="dark" title="Dark theme">
+                                <svg viewBox="0 0 28 28" fill="none">
+                                    <path d="M10.5 9.99914C10.5 14.1413 13.8579 17.4991 18 17.4991C19.0332 17.4991 20.0176 17.2902 20.9132 16.9123C19.7761 19.6075 17.109 21.4991 14 21.4991C9.85786 21.4991 6.5 18.1413 6.5 13.9991C6.5 10.8902 8.39167 8.22304 11.0868 7.08594C10.7089 7.98159 10.5 8.96597 10.5 9.99914Z" stroke="currentColor" stroke-linejoin="round"></path>
+                                    <path d="M16.3561 6.50754L16.5 5.5L16.6439 6.50754C16.7068 6.94752 17.0525 7.29321 17.4925 7.35607L18.5 7.5L17.4925 7.64393C17.0525 7.70679 16.7068 8.05248 16.6439 8.49246L16.5 9.5L16.3561 8.49246C16.2932 8.05248 15.9475 7.70679 15.5075 7.64393L14.5 7.5L15.5075 7.35607C15.9475 7.29321 16.2932 6.94752 16.3561 6.50754Z" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M20.3561 11.5075L20.5 10.5L20.6439 11.5075C20.7068 11.9475 21.0525 12.2932 21.4925 12.3561L22.5 12.5L21.4925 12.6439C21.0525 12.7068 20.7068 13.0525 20.6439 13.4925L20.5 14.5L20.3561 13.4925C20.2932 13.0525 19.9475 12.7068 19.5075 12.6439L18.5 12.5L19.5075 12.3561C19.9475 12.2932 20.2932 11.9475 20.3561 11.5075Z" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <button id="theme-system" class="theme-option active" data-theme="system" title="System theme">
+                                <svg viewBox="0 0 28 28" fill="none">
+                                    <path d="M7.5 8.5C7.5 7.94772 7.94772 7.5 8.5 7.5H19.5C20.0523 7.5 20.5 7.94772 20.5 8.5V16.5C20.5 17.0523 20.0523 17.5 19.5 17.5H8.5C7.94772 17.5 7.5 17.0523 7.5 16.5V8.5Z" stroke="currentColor"></path>
+                                    <path d="M7.5 8.5C7.5 7.94772 7.94772 7.5 8.5 7.5H19.5C20.0523 7.5 20.5 7.94772 20.5 8.5V14.5C20.5 15.0523 20.0523 15.5 19.5 15.5H8.5C7.94772 15.5 7.5 15.0523 7.5 14.5V8.5Z" stroke="currentColor"></path>
+                                    <path d="M16.5 20.5V17.5H11.5V20.5M16.5 20.5H11.5M16.5 20.5H17.5M11.5 20.5H10.5" stroke="currentColor" stroke-linecap="round"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <%-- **********************************************************--%>
+                </div>
+            </nav>
+
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+
+            <footer class="bg-gray-800 dark:bg-gray-800 border-t dark:border-gray-700 transition-colors duration-200">
+                <div class="centered py-8 h-14">
+                    <p class="text-gray-300 dark:text-gray-300">© 2025, OFF THE GRID, Inc. or its affiliates</p>
+                </div>
+            </footer>
+
+            <script>
+                // Theme Management System
+                //class ThemeManager {
+                //    constructor() {
+                //        this.theme = localStorage.getItem('theme') || 'system';
+                //        this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                //        this.init();
+                //    }
+
+                //    init() {
+                //        // Listen for system theme changes
+                //        this.mediaQuery.addEventListener('change', () => {
+                //            if (this.theme === 'system') {
+                //                this.applyTheme();
+                //            }
+                //        });
+
+                //        // Set up theme toggle buttons
+                //        document.querySelectorAll('.theme-option').forEach(button => {
+                //            button.addEventListener('click', () => {
+                //                this.setTheme(button.dataset.theme);
+                //            });
+                //        });
+
+                //        // Apply initial theme
+                //        this.applyTheme();
+                //        this.updateUI();
+                //    }
+
+                //    setTheme(newTheme) {
+                //        this.theme = newTheme;
+                //        localStorage.setItem('theme', newTheme);
+                //        this.applyTheme();
+                //        this.updateUI();
+                //    }
+
+                //    applyTheme() {
+                //        const html = document.documentElement;
+
+                //        if (this.theme === 'dark') {
+                //            html.classList.add('dark');
+                //        } else if (this.theme === 'light') {
+                //            html.classList.remove('dark');
+                //        } else { // system
+                //                    if (this.mediaQuery.matches) {
+                //                        html.classList.add('dark');
+                //                    } else {
+                //                        html.classList.remove('dark');
+                //                    }
+                //               }
+                //    }
+
+                //}
+
+
+                //    updateUI() {
+                //        document.querySelectorAll('.theme-option').forEach(button => {
+                //            if (button.dataset.theme === this.theme) {
+                //                button.classList.add('active');
+                //            } else {
+                //                button.classList.remove('active');
+                //            }
+                //        });
+                //    }
+                //}
+                class ThemeManager {
+                    constructor() {
+                        this.theme = localStorage.getItem('theme') || 'system';
+                        this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                        this.init();
+                    }
+
+                    init() {
+                        // Listen for system theme changes
+                        this.mediaQuery.addEventListener('change', () => {
+                            if (this.theme === 'system') {
+                                this.applyTheme();
+                            }
+                        });
+
+                        // Set up theme toggle buttons
+                        document.querySelectorAll('.theme-option').forEach(button => {
+                            button.addEventListener('click', () => {
+                                this.setTheme(button.dataset.theme);
+                            });
+                        });
+
+                        // Apply initial theme
+                        this.applyTheme();
+                        this.updateUI();
+                    }
+
+                    setTheme(newTheme) {
+                        this.theme = newTheme;
+                        localStorage.setItem('theme', newTheme);
+                        this.applyTheme();
+                        this.updateUI();
+                    }
+
+                    applyTheme() {
+                        const html = document.documentElement;
+
+                        if (this.theme === 'dark') {
+                            html.classList.add('dark');
+                        } else if (this.theme === 'light') {
+                            html.classList.remove('dark');
+                        } else { // system
+                            if (this.mediaQuery.matches) {
+                                html.classList.add('dark');
+                            } else {
+                                html.classList.remove('dark');
+                            }
+                        }
+                    }
+
+                    updateUI() {
+                        document.querySelectorAll('.theme-option').forEach(button => {
+                            if (button.dataset.theme === this.theme) {
+                                button.classList.add('active');
+                            } else {
+                                button.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+
+                // Instantiate ThemeManager once DOM is ready
+                document.addEventListener("DOMContentLoaded", () => {
+                    new ThemeManager();
+                });
+
+
+                // Initialize theme manager when DOM is loaded
+                document.addEventListener("DOMContentLoaded", function () {
+                    const searchInput = document.getElementById("searchInput");
+                    const searchButton = document.getElementById("searchButton");
+                    const searchCategory = document.getElementById("searchCategory");
+                    const searchCategoryText = document.getElementById("searchCategoryText");
+                    const categoryDropdown = document.getElementById("categoryDropdown");
+
+                    // Toggle dropdown visibility
+                    searchCategory.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        categoryDropdown.classList.toggle("hidden");
+                    });
+
+                    // Select category
+                    categoryDropdown.querySelectorAll("a").forEach(item => {
+                        item.addEventListener("click", function (e) {
+                            e.preventDefault();
+                            searchCategoryText.innerText = this.dataset.category;
+                            categoryDropdown.classList.add("hidden");
+                        });
+                    });
+
+                    // Close dropdown when clicking outside
+                    document.addEventListener("click", function (e) {
+                        if (!searchCategory.contains(e.target) && !categoryDropdown.contains(e.target)) {
+                            categoryDropdown.classList.add("hidden");
+                        }
+                    });
+
+                    // Perform search
+                    function performSearch() {
+                        const query = searchInput.value.trim();
+                        const category = searchCategoryText.innerText;
+
+                        if (!query) {
+                            alert("Please enter a search term!");
+                            return;
+                        }
+
+                        const searchUrl = `search_results.aspx?query=${encodeURIComponent(query)}&category=${encodeURIComponent(category)}`;
+                        window.location.href = searchUrl;
+                    }
+
+                    searchButton.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        performSearch();
+                    });
+
+                    searchInput.addEventListener("keyup", function (event) {
+                        if (event.key === "Enter") {
+                            event.preventDefault();
+                            performSearch();
+                        }
+                    });
+                });
+
+
+                // Example usage: updateCartCount(5);
+
+                //// Search functionality
+                //const searchInput = document.querySelector('input[type="text"]');
+                //const searchButton = document.querySelector('button[class*="bg-nav-accent"]');
+
+                //function handleSearch() {
+                //    const query = searchInput.value.trim();
+                //    if (query) {
+                //        // Replace with your search logic
+                //        console.log('Searching for:', query);
+                //        // window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                //    }
+                //}
+
+                //searchButton.addEventListener('click', handleSearch);
+                //searchInput.addEventListener('keypress', function (e) {
+                //    if (e.key === 'Enter') {
+                //        handleSearch();
+                //    }
+                //});
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    const searchInput = document.getElementById("searchInput");
+                    const searchButton = document.getElementById("searchButton");
+                    const searchCategoryText = document.getElementById("searchCategoryText");
+
+                    // Function to perform search
+                    function performSearch() {
+                        const query = searchInput.value.trim();
+                        const category = searchCategoryText.innerText;
+
+                        if (!query) {
+                            alert("Please enter a search term!");
+                            return;
+                        }
+
+                        // Redirect to SearchResults.aspx with query and category
+                        const searchUrl = `search_results.aspx?query=${encodeURIComponent(query)}&category=${encodeURIComponent(category)}`;
+                        window.location.href = searchUrl;
+                    }
+
+                    // Trigger search on button click
+                    searchButton.addEventListener("click", performSearch);
+
+                    // Trigger search when pressing Enter in the input
+                    searchInput.addEventListener("keyup", function (event) {
+                        if (event.key === "Enter") {
+                            performSearch();
+                        }
+                    });
+                });
+
+
+            </script>
+
+        </div>
+    </form>
+</body>
+</html>
